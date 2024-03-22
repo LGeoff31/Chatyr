@@ -1,7 +1,1 @@
-# testing
-# james2
-# james2
-# james3
-# james5
-# james6
-# james7
+Chat App created with socket.io for friends to chat
