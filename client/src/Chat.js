@@ -23,8 +23,7 @@ const Chat = ({ socket, username, room }) => {
   };
 
   useEffect(() => {
-    socket.on("receive_message", (data) => {
-      console.log("ran");
+    socket.off("receive_message").on("receive_message", (data) => {
       setMessageList((list) => [...list, data]); //whatever list before then at end add new
     });
   }, [socket]);
@@ -37,6 +36,12 @@ const Chat = ({ socket, username, room }) => {
       display="flex"
       justifyContent={"center"}
       alignContent={"center"}
+      sx={{
+        color: "#212121",
+        fontFamily: "Open Sans, sans-serif",
+        margin: 0,
+        padding: 0,
+      }}
     >
       {/* <div className="chat-window"> */}
       <Box sx={{ background: "#263238", borderRadius: "0.1rem" }}>
@@ -57,41 +62,60 @@ const Chat = ({ socket, username, room }) => {
         </Typography>
       </Box>
       <Box
-        sx={{ background: "white", paddingLeft: "1rem", paddingTop: "1rem" }}
+        sx={{
+          background: "white",
+          paddingLeft: "1rem",
+          paddingTop: "1rem",
+          // height: "50%",
+        }}
       >
-        <div className="chat-body">
-          <ScrollToBottom className="message-container">
-            {messageList.map((messageContent, idx) => {
-              return (
-                <div
-                  className="message"
-                  id={username === messageContent.author ? "you" : "other"}
+        <ScrollToBottom>
+          {messageList.map((messageContent, idx) => {
+            return (
+              <Box
+                key={idx}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems:
+                    username === messageContent.author
+                      ? "flex-start"
+                      : "flex-end",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                <Box
+                  sx={{
+                    backgroundColor:
+                      username === messageContent.author
+                        ? "#43a047"
+                        : "cornflowerblue",
+                    borderRadius: "5px",
+                    color: "white",
+                    maxWidth: "120px",
+                    padding: "5px",
+                    overflowWrap: "break-word",
+                    wordBreak: "break-word",
+                  }}
                 >
-                  <div>
-                    <div className="message-content">
-                      <Typography fontSize="2rem">
-                        {messageContent.message}{" "}
-                      </Typography>
-                    </div>
-                    <div className="message-meta">
-                      <Stack direction="row" gap="0.5rem">
-                        <Typography fontSize={"1rem"}>
-                          {messageContent.time}{" "}
-                        </Typography>
-                        <Typography fontSize={"1rem"} marginBottom="2rem">
-                          {messageContent.author}{" "}
-                        </Typography>
-                      </Stack>
-                    </div>
-                  </div>
-                </div>
-              );
+                  <Typography fontSize="2rem">
+                    {messageContent.message}
+                  </Typography>
+                </Box>
+                <Stack direction="row" gap="0.5rem" sx={{ fontSize: "1rem" }}>
+                  <Typography>{messageContent.time}</Typography>
+                  <Typography marginBottom="2rem">
+                    {messageContent.author}
+                  </Typography>
+                </Stack>
+              </Box>
+            );
 
-              {
-              }
-            })}
-          </ScrollToBottom>
-        </div>
+            {
+            }
+          })}
+        </ScrollToBottom>
+
         <div className="chat-footer">
           <TextField
             sx={{ paddingBottom: "3rem" }}
@@ -107,7 +131,6 @@ const Chat = ({ socket, username, room }) => {
             &#9658;{" "}
           </Button>
         </div>
-        {/* </div> */}
       </Box>
     </Grid>
   );
